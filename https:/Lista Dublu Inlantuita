@@ -1,0 +1,198 @@
+#include <iostream>
+using namespace std;
+ 
+ 
+class Nod {
+ 
+public:
+    int info;
+    Nod* next;
+    Nod* prev;
+ 
+    Nod()
+    {
+        info = 0;
+        next = NULL;
+        prev = NULL;
+    }
+ 
+    Nod(int i)
+    {
+        info = i;
+    }
+ 
+    ~Nod()
+    {
+        cout<<"Destructorul a fost apelat."<<endl;
+    }
+};
+ 
+class ListaDubluInlantuita {
+ 
+private:
+    Nod* cap;
+    Nod* coada;
+ 
+ 
+public :
+    ListaDubluInlantuita()
+    {
+        cap = NULL;
+        coada = NULL;
+    }
+ 
+    ListaDubluInlantuita(Nod *n)
+    {
+        cap = n;
+    }
+ 
+    void adaugaNod(Nod* n)
+    {
+        if((cap == NULL) && (coada == NULL))
+            cap = n;
+ 
+        else if( (cap != NULL) && (coada == NULL) )
+        {
+            coada = n;
+            cap -> next = coada;
+            coada -> prev = cap;
+        }
+ 
+        else
+        {
+            coada -> next = n;
+            n -> prev = coada;
+            coada = n;
+        }
+    }
+ 
+    void afisare()
+    {
+        if (cap == NULL)
+        {
+            cout<<"Nu exista noduri in lista."<<endl;
+        }
+        else
+        {
+            Nod* curent = cap;
+            while(curent != NULL)
+            {
+                cout<<curent -> info<<" ";
+                curent = curent -> next;
+            }
+            cout<<endl;
+        }
+ 
+    }
+ 
+   void stergereNod(Nod* n)
+    {
+        if (n -> prev == NULL)
+        {
+            n -> next -> prev = NULL;
+            cap = n -> next;
+            n -> next = NULL;
+        }
+ 
+        else if (n -> next == NULL)
+        {
+            n -> prev -> next = NULL;
+            coada = n -> prev;
+            n -> prev =NULL;
+        }
+ 
+        else
+        {
+            n -> prev -> next = n -> next;
+            n-> next -> prev = n -> prev;
+        }
+    }
+ 
+     ListaDubluInlantuita operator+(const ListaDubluInlantuita &rhs)
+    {
+        ListaDubluInlantuita temp;
+ 
+        Nod *n = cap;
+        Nod *x;
+        while (n)
+        {
+            x = new Nod;
+            x -> info = n -> info;
+            temp.adaugaNod(x);
+            n = n->next;
+        }
+ 
+        n = rhs.cap;
+        while (n)
+        {
+            x = new Nod;
+            x -> info = n -> info;
+            temp.adaugaNod(x);
+            n = n->next;
+        }
+        return temp;
+    }
+ 
+ 
+    friend ostream& operator << (ostream &out, ListaDubluInlantuita &L);
+    friend std::istream& operator >>(std::istream &input, ListaDubluInlantuita &a);
+ 
+ 
+};
+ 
+ostream& operator << (ostream &out, ListaDubluInlantuita &L)
+{
+    Nod* x;
+    Nod* y;
+    x=L.cap;
+    y=L.coada;
+ 
+    while(x -> next != NULL)
+    {
+        out<<x -> info<<" ";
+        x = x -> next;
+    }
+    out<<endl;
+    while(y -> prev != NULL)
+    {
+        out<<x -> info<<" ";
+        x = x -> prev;
+    }
+return out;
+}
+ 
+ 
+std::istream& operator >>(std::istream &input, ListaDubluInlantuita &a)
+{
+ 
+    int i, size, data;
+    std::cout << "Size of the list: ";
+    input >> size;
+    Nod* n;
+    for (i = 0; i < size; ++i)
+    {
+        std::cout << "\nNode number " << i + 1 << ": ";
+        input >> data;
+        n  = new Nod;
+        n -> info = data;
+        a.adaugaNod(n);
+    }
+    return input;
+}
+ 
+ 
+ 
+ 
+ 
+int main()
+{
+    ListaDubluInlantuita L1;
+    ListaDubluInlantuita L2;
+    ListaDubluInlantuita L3;
+    cin>>L1;
+    cin>>L2;
+    L3=L1+L2;
+    cout<<L3;
+ 
+ 
+}
